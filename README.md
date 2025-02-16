@@ -21,20 +21,14 @@ A Python-based CLI tool for downloading files using multiple threads. This tool 
 
    Install the required libraries using pip:
    ```bash
-   pip install requests progress
+   pip install -r requirements.txt
    ```
 
-2. **Optional Dependency** (for QR code feature):
-   - Install `qr-filetransfer` for QR code generation:
-     ```bash
-     pip install qr-filetransfer
-     ```
-
-3. **Download the Script**:
+2. **Download the Script**:
    - Clone this repository or download the script:
      ```bash
-     git clone https://github.com/your-repo/multithreaded-downloader.git
-     cd multithreaded-downloader
+     git clone https://github.com/manavukani/flash-downloader.git
+     cd flash-downloader
      ```
 
 ---
