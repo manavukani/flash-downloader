@@ -1,67 +1,95 @@
-# Flash Downloader - A Multi-Threaded File Downloader
+# **Multithreaded File Downloader (I call it Flash ⚡)**
 
-A command-line interface (CLI) tool that enables fast and efficient downloading of files through multithreading. This tool is designed to optimize download speeds by concurrently downloading different segments of the file, and provides an easy method to transfer files across devices using a QR code.
+A Python-based CLI tool for downloading files using multiple threads. This tool supports fast and efficient downloads by splitting files into chunks and downloading them concurrently. It also includes an optional feature to generate a QR code for transferring the downloaded file to an external device over a local network.
 
-## Key Features
+---
 
-- **Multithreading:** Downloads different parts of the file simultaneously, significantly reducing overall download time.
-- **Network Resilience:** Automatically detects unstable network connections, with capabilities to pause and resume downloads as needed.
-- **Device Transfer via QR Code:** Easily transfer downloaded files to other devices within the same network by scanning a QR code.
-- **Progress Tracking:** Includes a visual progress bar to monitor download status in real-time.
+## **Features**
+- **Multithreaded Downloads**: Download files faster by using multiple threads.
+- **Resilience to Network Errors**: Automatically retries failed chunks due to network interruptions.
+- **Progress Bar**: Visual feedback on download progress.
+- **QR Code Transfer**: Generate a QR code to transfer the downloaded file to your phone or another device (optional).
+- **Customizable**: Set the number of threads, output filename, and more via command-line arguments.
 
-## Installation
+---
 
-Clone the repository and set up the downloader:
+## **Installation**
 
+1. **Prerequisites**:
+   - Python 3.x
+   - Required Python libraries: `requests`, `progress`, `mimetypes`
+
+   Install the required libraries using pip:
+   ```bash
+   pip install requests progress
+   ```
+
+2. **Optional Dependency** (for QR code feature):
+   - Install `qr-filetransfer` for QR code generation:
+     ```bash
+     pip install qr-filetransfer
+     ```
+
+3. **Download the Script**:
+   - Clone this repository or download the script:
+     ```bash
+     git clone https://github.com/your-repo/multithreaded-downloader.git
+     cd multithreaded-downloader
+     ```
+
+---
+
+## **Usage**
+
+### **Basic Usage**
 ```bash
-git clone https://github.com/manavukani/flash-downloader
-cd flash-downloader
-pip3 install -r requirements.txt
-chmod +x downloader.py
+./downloader.py <URL> [-c N_THREADS] [--filename OUTPUT_FILE]
 ```
 
-## How to Use
+- **`<URL>`**: The URL of the file to download.
+- **`-c N_THREADS`**: Number of threads to use (default: 4).
+- **`--filename OUTPUT_FILE`**: Name of the output file (optional).
 
-Run the tool using the following command format:
-
+#### Example:
 ```bash
-./downloader.py <URL> -c <nThreads> --filename <fileName>
+./downloader.py https://example.com/largefile.zip -c 8 --filename myfile.zip
 ```
 
-- `nThreads` and `fileName` are optional arguments.
+### **QR Code Transfer**
+To enable the QR code feature, set `ENABLE_QR_CODE_DOWNLOADS = 1` in the script. After the download completes, a QR code will be generated for transferring the file to your phone.
 
-### Example Usage
+---
 
-```bash
-./downloader.py "https://farm8.staticflickr.com/7281/8874270432_8f4a146b57_o.jpg"
-```
+## **How It Works**
+1. **File Splitting**:
+   - The file is divided into chunks of size `CHUNK_SIZE` (default: 1 MB).
+   - Each chunk is assigned to a thread for downloading.
 
-- If `--filename` is not specified, the script automatically determines the file extension from the URL.
+2. **Multithreaded Download**:
+   - Multiple threads download their assigned chunks concurrently.
+   - If a thread encounters a network error, it retries the chunk.
 
-Alternatively, you can simplify the command syntax by renaming `downloader.py` to `downloader`:
+3. **Progress Tracking**:
+   - A progress bar shows the download progress in real-time.
 
-```bash
-./downloader <URL> -c <nThreads> --filename <fileName>
-```
+4. **File Assembly**:
+   - Downloaded chunks are written to the correct locations in the output file.
 
-Note: Renaming the script might affect the ability to run predefined unit tests.
+5. **QR Code Generation** (optional):
+   - After the download completes, a QR code is generated for transferring the file.
 
-## Unit Tests
+---
 
-Execute the following command to run unit tests:
+## **Limitations**
+- No support for resuming user interrupted downloads.
+- Limited error handling for disk space, permissions, and invalid URLs.
+- QR code feature depends on the external `qr-filetransfer` tool.
+- Hardcoded constants may not be optimal for all use cases.
 
-```bash
-python3 test_downloader.py
-```
+---
 
-## Implementation Details
-
-The downloader implements a consumer-producer model using a synchronized queue. Tasks are divided among threads, each responsible for downloading and assembling a specific segment of the file to ensure efficient use of network resources and quick recovery in case of interruptions.
-
-- **Task Allocation:** Tasks are assigned coalesced file regions to optimize data continuity in case of interrupted downloads.
-- **Resilience to Network Issues:** If a thread encounters a network issue, the task is requeued for another attempt, ensuring robustness against network instability.
-- **Progress Bar Synchronization:** A shared progress bar updates through a semaphore, allowing accurate and thread-safe reporting.
-
-## Credits
-
-File transfer feature is implemented using [qr-filetransfer].
+## **Contributing**
+Contributions are welcome! If you'd like to contribute, please:
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Submit a pull request.
